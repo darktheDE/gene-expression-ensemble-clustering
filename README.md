@@ -1,13 +1,13 @@
-# 📦 Streamlit App Starter Kit 
+# 📦 Phân cụm dữ liệu biểu hiện gen với Ensemble Learning (Weighted SCENA-based Approach) 
 ```
-⬆️ (Replace above with your app's name)
+⬆️ Nhóm 1: Kiến Hưng, Ngọc Thạch, Hữu Huy
 ```
 
-Description of the app ...
+Đề tài: Phân cụm dữ liệu biểu hiện gen với Ensemble Learning (Weighted SCENA-based Approach), là đồ án cuối kỳ môn Machine Learning - HCMUTE.
 
 ## Demo App
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://app-starter-kit.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://geneExEnCluG1.streamlit.app/)
 
 ## GitHub Codespaces
 
