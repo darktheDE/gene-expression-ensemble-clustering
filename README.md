@@ -72,17 +72,19 @@ streamlit run streamlit_app.py
 ## Cấu trúc thư mục
 
 ```
-├── streamlit_app.py      # Main app
+├── streamlit_app.py      # Main app (Dashboard)
 ├── pages/                # Các trang Streamlit
-│   ├── dashboard.py
 │   ├── dataset.py
 │   ├── models_evaluation.py
 │   └── ensemble_results.py
+├── utils/                # Utility functions
+│   ├── data_loader.py
+│   └── visualizations.py
 ├── data/                 # Dữ liệu
 │   ├── Raw/              # Chứa data.csv và labels.csv gốc
 │   └── Processed/        # Dữ liệu đã xử lý và kết quả PCA
 ├── code/                 # Notebooks phân tích
-└── result/               # Kết quả
+└── assets/               # Hình ảnh và tài nguyên
 ```
 
 ## Công nghệ sử dụng

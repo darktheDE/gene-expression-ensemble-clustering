@@ -40,15 +40,15 @@ def show():
         st.markdown("""
         ### Trọng số các mô hình
         
-        Hệ thống tự động gán trọng số dựa trên **performance metrics** của từng mô hình:
+        Hệ thống tự động gán trọng số dựa trên **Silhouette Score** của từng mô hình:
         
-        - **Hierarchical (70%)**: Baseline tốt nhất, kết quả ổn định
-        - **DBSCAN (20%)**: Khả năng lọc nhiễu và phát hiện outliers
-        - **K-Means++ (10%)**: Đóng góp cấu trúc cơ bản
+        - **Hierarchical**: Silhouette = 0.3699
+        - **K-Means++**: Silhouette = 0.3698
+        - **DBSCAN**: Silhouette = 0.3663
         
         **Ý nghĩa:**
-        > Ensemble tự động "tin tưởng" mô hình có hiệu suất cao nhất, đồng thời 
-        > vẫn khai thác điểm mạnh của các mô hình khác.
+        > Silhouette Score đo độ phân tách giữa các clusters. Các mô hình có
+        > điểm gần bằng nhau nên đóng góp tương đương trong Ensemble.
         """)
     
     with col2:

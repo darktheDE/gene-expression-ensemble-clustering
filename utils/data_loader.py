@@ -95,13 +95,16 @@ def get_model_notes():
 
 def get_ensemble_weights():
     """
-    Get ensemble model weights.
+    Get ensemble model weights based on Silhouette Score.
+    
+    Weights are calculated from each model's Silhouette Score, which
+    measures how well-defined the clusters are.
     
     Returns:
-        dict: Weights for each base model
+        dict: Weights for each base model (Silhouette scores)
     """
     return {
-        'Hierarchical': 0.7,
-        'DBSCAN': 0.2,
-        'K-Means++': 0.1
+        'Hierarchical': 0.3699,
+        'K-Means++': 0.3698,
+        'DBSCAN': 0.3663
     }
