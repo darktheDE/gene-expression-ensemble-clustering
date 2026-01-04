@@ -1,5 +1,39 @@
+# Virtual environment
 venv/
-CLAUDE.md
+.venv/
+env/
+data/Raw/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
 .cursor/
 .claude/
-.github/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+CLAUDE.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data (uncomment if data is large)
+# data/*.csv
+# data/*.pkl
