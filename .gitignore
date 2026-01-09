@@ -2,7 +2,7 @@
 venv/
 .venv/
 env/
-data/Raw/
+data/Raw/data.csv
 # Python
 __pycache__/
 *.py[cod]

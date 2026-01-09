@@ -40,6 +40,23 @@ def load_all_data():
     return X_pca, labels, metrics
 
 
+@st.cache_data
+def load_raw_data():
+    """
+    Load raw gene expression data.
+    
+    Returns:
+        pd.DataFrame: Raw data
+    """
+    # Base path
+    data_path = Path(__file__).parent.parent / 'data' / 'Raw'
+    
+    # Load raw data
+    raw_data = pd.read_csv(data_path / 'sampledata.csv', index_col=0)
+    
+    return raw_data
+
+
 def get_class_colors():
     """
     Get consistent color mapping for cancer classes.
