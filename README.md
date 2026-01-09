@@ -9,7 +9,7 @@
 
 ---
 
-## 📑 Mục Lục
+## Mục Lục
 
 1. [Giới thiệu Dự án](#1-giới-thiệu-dự-án)
 2. [Thông tin Nhóm thực hiện](#2-thông-tin-nhóm-thực-hiện)
@@ -36,9 +36,9 @@ Dự án này đề xuất một kiến trúc **Ensemble Clustering** dựa trê
 
 | Vai trò | Họ và tên | MSSV | Nhiệm vụ chính |
 |---------|-----------|------|----------------|
-| **Thành viên** | Huỳnh Ngọc Thạch | 23133072 | Data Analysis, Modeling (K-Means++) |
-| **Thành viên** | Huỳnh Hữu Huy | 23133027 | Modeling (Hierarchical), Visualization |
-| **Thành viên** | Đỗ Kiến Hưng | 23133030 | Modeling (DBSCAN), Ensemble Logic |
+| **Thành viên** | Huỳnh Ngọc Thạch | 23133072 | Visualization, Data Analysis, Modeling (DBSCAN) |
+| **Thành viên** | Huỳnh Hữu Huy | 23133027 | Evaluation, Modeling (Hierarchical) |
+| **Thành viên** | Đỗ Kiến Hưng | 23133030 | Modeling (K-Means++), Ensemble Logic, Demo Application |
 
 **Giảng viên hướng dẫn:** TS. Phan Thị Huyền Trang
 
@@ -110,20 +110,20 @@ Hệ thống đạt được hiệu suất rất cao, chứng minh tính hiệu 
 ### Cây thư mục
 ```bash
 gene-expression-clustering/
-├── streamlit_app.py        # 🏠 Main App Entry
-├── pages/                  # 📄 Các trang chức năng
-│   ├── demo.py             # Demo pipeline từng bước
-│   ├── dataset.py          # Khám phá dữ liệu
-│   ├── models_evaluation.py# Đánh giá Model đơn lẻ
-│   └── ensemble_results.py # Kết quả Ensemble
-├── utils/                  # 🛠️ Hàm tiện ích
-│   ├── data_loader.py      # Load & Cache dữ liệu
-│   └── visualizations.py   # Vẽ biểu đồ
-├── data/                   # 💾 Dữ liệu
-│   ├── Raw/                # Dữ liệu thô (sampledata.csv)
-│   └── Processed/          # Dữ liệu PCA & Labels
-├── code/                   # 📓 Jupyter Notebooks huấn luyện
-└── assets/                 # 🖼️ Hình ảnh báo cáo
+├── streamlit_app.py         # Main App Entry
+├── pages/                   # Các trang chức năng
+│   ├── demo.py              # Demo pipeline từng bước
+│   ├── dataset.py           # Khám phá dữ liệu
+│   ├── models_evaluation.py # Đánh giá Model đơn lẻ
+│   └── ensemble_results.py  # Kết quả Ensemble
+├── utils/                   # Hàm tiện ích
+│   ├── data_loader.py       # Load & Cache dữ liệu
+│   └── visualizations.py    # Vẽ biểu đồ
+├── data/                    # Dữ liệu
+│   ├── Raw/                 # Dữ liệu thô (sampledata.csv)
+│   └── Processed/           # Dữ liệu PCA & Labels
+├── code/                    # Jupyter Notebooks huấn luyện
+└── assets/                  # Hình ảnh báo cáo
 ```
 
 ---

@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from utils.data_loader import load_all_data, load_raw_data, get_class_colors, get_ensemble_weights
+from utils.step_by_step import StepByStepDemo
 import time
 
 def create_cluster_to_class_mapping(cluster_labels, ground_truth):
@@ -28,10 +29,10 @@ def plot_raw_data_heatmap(raw_data, n_genes=50):
     
     fig = px.imshow(
         subset,
-        labels=dict(x="Genes (Top 50 by variance)", y="Sample", color="Expression"),
+        labels=dict(x="Gen (Top 50 phương sai)", y="Mẫu", color="Biểu hiện"),
         aspect="auto",
         color_continuous_scale="RdBu_r",
-        title="Gene Expression Heatmap"
+        title="Biểu đồ Nhiệt Biểu hiện Gen"
     )
     fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20))
     return fig
@@ -46,14 +47,14 @@ def plot_pca_variance():
     cumulative = np.cumsum(variance_ratio)
     
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-    fig.add_trace(go.Bar(x=components, y=variance_ratio, name="Individual", marker_color='#4ECDC4'), secondary_y=False)
-    fig.add_trace(go.Scatter(x=components, y=cumulative, name="Cumulative", 
+    fig.add_trace(go.Bar(x=components, y=variance_ratio, name="Cá nhân", marker_color='#4ECDC4'), secondary_y=False)
+    fig.add_trace(go.Scatter(x=components, y=cumulative, name="Tích lũy", 
                    line=dict(color='#FF6B6B', width=3), mode='lines+markers'), secondary_y=True)
     
-    fig.update_layout(title="PCA Explained Variance", xaxis_title="Component", height=300, template='plotly_white',
+    fig.update_layout(title="Phương sai được giải thích bởi PCA", xaxis_title="Thành phần", height=300, template='plotly_white',
                      legend=dict(orientation="h", yanchor="bottom", y=1.02))
-    fig.update_yaxes(title_text="Individual", secondary_y=False)
-    fig.update_yaxes(title_text="Cumulative", secondary_y=True)
+    fig.update_yaxes(title_text="Cá nhân", secondary_y=False)
+    fig.update_yaxes(title_text="Tích lũy", secondary_y=True)
     return fig, cumulative[-1]
 
 
@@ -80,8 +81,8 @@ def plot_sample_scatter(X_pca, sample_indices, labels, color_map):
             showlegend=False
         ))
     
-    fig.update_layout(title="Sample Location in PCA Space", xaxis_title="PC1", yaxis_title="PC2",
-                     template='plotly_white', height=350, legend=dict(title="Ground Truth"))
+    fig.update_layout(title="Vị trí Mẫu trong Không gian PCA", xaxis_title="PC1", yaxis_title="PC2",
+                     template='plotly_white', height=350, legend=dict(title="Nhãn thực tế"))
     return fig
 
 
@@ -107,13 +108,13 @@ def plot_co_association_matrix(labels_dict, sample_indices):
         colorscale='Blues',
         text=np.round(co_matrix, 2),
         texttemplate="%{text}",
-        hovertemplate="Sample %{x} vs %{y}<br>Agreement: %{z:.2f}<extra></extra>"
+        hovertemplate="Mẫu %{x} vs %{y}<br>Độ đồng thuận: %{z:.2f}<extra></extra>"
     ))
     
     fig.update_layout(
-        title="CSPA Co-Association Matrix",
-        xaxis_title="Sample",
-        yaxis_title="Sample",
+        title="Ma trận Đồng thuận CSPA",
+        xaxis_title="Mẫu",
+        yaxis_title="Mẫu",
         height=400,
         template='plotly_white'
     )
@@ -142,13 +143,13 @@ def plot_scena_similarity_matrix(results_df, ensemble_results):
         colorscale='Viridis',
         text=np.round(sim_matrix, 2),
         texttemplate="%{text}",
-        hovertemplate="Sample %{x} vs %{y}<br>Similarity: %{z:.2f}<extra></extra>"
+        hovertemplate="Mẫu %{x} vs %{y}<br>Độ tương đồng: %{z:.2f}<extra></extra>"
     ))
     
     fig.update_layout(
-        title="SCENA Similarity Matrix",
-        xaxis_title="Sample",
-        yaxis_title="Sample", 
+        title="Ma trận Tương đồng SCENA",
+        xaxis_title="Mẫu",
+        yaxis_title="Mẫu", 
         height=400,
         template='plotly_white'
     )
@@ -181,7 +182,7 @@ def plot_ensemble_metrics_radar():
     
     fig.update_layout(
         polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
-        title="Ensemble Performance Metrics",
+        title="Chỉ số Hiệu suất Ensemble",
         height=350,
         template='plotly_white'
     )
@@ -211,7 +212,7 @@ def plot_model_comparison_grouped():
         ))
     
     fig.update_layout(
-        title="Model Performance Comparison",
+        title="So sánh Hiệu suất Mô hình",
         barmode='group',
         template='plotly_white',
         height=400,
@@ -226,7 +227,7 @@ def plot_ensemble_weights_detailed():
     weights = get_ensemble_weights()
     silhouette_scores = {'Hierarchical': 0.3699, 'K-Means++': 0.3698, 'DBSCAN': 0.3663}
     
-    fig = make_subplots(rows=1, cols=2, subplot_titles=("Silhouette Scores", "Normalized Weights"),
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("Điểm Silhouette", "Trọng số Chuẩn hóa"),
                        specs=[[{"type": "bar"}, {"type": "pie"}]])
     
     models = list(weights.keys())
@@ -250,12 +251,12 @@ def plot_ensemble_weights_detailed():
         showlegend=False
     ), row=1, col=2)
     
-    fig.update_layout(height=350, template='plotly_white', title_text="Ensemble Weight Calculation")
+    fig.update_layout(height=350, template='plotly_white', title_text="Tính toán Trọng số Ensemble")
     return fig
 
 
 def show():
-    st.title("Demo Pipeline Prediction")
+    st.title("Mô phỏng Quy trình Dự đoán")
     st.markdown("""
     Trang này mô phỏng **quy trình Weighted SCENA Ensemble** đầy đủ:
     
@@ -280,6 +281,10 @@ def show():
             X_pca, labels, metrics = load_all_data()
             color_map = get_class_colors()
             
+            # Initialize Step-by-Step Demo Helper
+            step_demo = StepByStepDemo()
+            
+            
             st.write("Preparing mappings...")
             ground_truth = labels['Ground Truth']
             mappings = {}
@@ -292,13 +297,14 @@ def show():
         sample_indices = sampled_raw.index
         
         # ==================== STEP 1: RAW DATA ====================
-        st.header("Step 1: Input - Raw Data")
+        # ==================== STEP 1: RAW DATA ====================
+        st.header("Bước 1: Dữ liệu đầu vào - Raw Data")
         
         col1, col2 = st.columns([1, 1])
         with col1:
-            st.markdown(f"**{n_samples} mẫu từ {len(raw_data)} samples:**")
+            st.markdown(f"**{n_samples} mẫu từ {len(raw_data)} mẫu:**")
             st.dataframe(sampled_raw.iloc[:, :8], use_container_width=True)
-            st.caption(f"Hiển thị 8/{raw_data.shape[1]:,} genes")
+            st.caption(f"Hiển thị 8/{raw_data.shape[1]:,} gen")
         
         with col2:
             fig_heatmap = plot_raw_data_heatmap(sampled_raw)
@@ -307,13 +313,14 @@ def show():
         st.markdown("---")
         
         # ==================== STEP 2: PREPROCESSING ====================
-        st.header("Step 2: Preprocessing - PCA")
+        # ==================== STEP 2: PREPROCESSING ====================
+        st.header("Bước 2: Tiền xử lý - PCA")
         
         col1, col2 = st.columns([1, 1])
         with col1:
             fig_pca, total_var = plot_pca_variance()
             st.plotly_chart(fig_pca, use_container_width=True)
-            st.info(f"**30 components** giải thích **{total_var:.1%}** variance")
+            st.info(f"**30 thành phần** giải thích **{total_var:.1%}** phương sai")
         
         with col2:
             fig_location = plot_sample_scatter(X_pca, sample_indices, ground_truth, color_map)
@@ -326,7 +333,7 @@ def show():
         st.markdown("---")
         
         # ==================== STEP 3: BASE MODELS ====================
-        st.header("Step 3: Base Clustering Models")
+        st.header("Bước 3: Các Mô hình Phân cụm Cơ sở")
         
         results_df = pd.DataFrame(index=sample_indices)
         for model in ['K-Means++', 'Hierarchical', 'DBSCAN']:
@@ -343,13 +350,48 @@ def show():
                 st.dataframe(pd.DataFrame({'Pred': results_df[model], 'Actual': ground_truth_sample}), 
                            use_container_width=True, height=200)
         
+        # --- Step-by-Step Logic for Base Models ---
+        # --- Step-by-Step Logic for Base Models ---
+        st.subheader("Giải thích Chi tiết Thuật toán")
+        
+        tab1, tab2, tab3 = st.tabs(["Logic K-Means++", "Logic Phân cấp", "Logic DBSCAN"])
+        
+        with tab1:
+            st.markdown("#### K-Means++: Khoảng cách đến Centroids")
+            st.markdown("Với mỗi mẫu, chúng ta tính khoảng cách Euclid đến centroids **toàn cục** của 5 cụm (được tính trước từ toàn bộ tập dữ liệu). Mẫu sẽ được gán cho centroid gần nhất.")
+            km_dist_df = step_demo.explain_kmeans(sample_indices)
+            if isinstance(km_dist_df, pd.DataFrame):
+                # Format for better readability
+                st.dataframe(km_dist_df.style.highlight_min(axis=1, color='lightgreen', subset=[c for c in km_dist_df.columns if 'Khoảng cách' in c]), use_container_width=True)
+            else:
+                st.write(km_dist_df) # Error message
+                
+        with tab2:
+            st.markdown("#### Phân cấp (Ward): Ma trận Khoảng cách & Gộp")
+            st.markdown("Chúng ta xem các mẫu này như một tập dữ liệu nhỏ để minh họa quá trình **Liên kết Ward**. Ban đầu, khoảng cách giữa mỡi cặp mẫu được tính toán.")
+            hc_dist_df, hc_explanation = step_demo.explain_hierarchical(sample_indices)
+            
+            col_hc1, col_hc2 = st.columns([2, 1])
+            with col_hc1:
+                st.dataframe(hc_dist_df.style.background_gradient(cmap='Blues', axis=None), use_container_width=True)
+            with col_hc2:
+                st.info(hc_explanation)
+                
+        with tab3:
+            st.markdown("#### DBSCAN: Đếm Hàng xóm")
+            st.markdown("Với mỗi mẫu, chúng ta đếm số lượng hàng xóm (từ **toàn bộ tập dữ liệu**) nằm trong bán kính `eps=111.017`. Nếu số lượng ≥ 5, đó là Điểm Lõi (Core Point).")
+            db_res_df = step_demo.explain_dbscan(sample_indices, eps=111.017, min_samples=5)
+            st.dataframe(db_res_df, use_container_width=True)
+        # ------------------------------------------
+        
         st.markdown("---")
         
         # ==================== STEP 4: ENSEMBLE (ENHANCED) ====================
-        st.header("Step 4: Weighted SCENA Ensemble")
+        # ==================== STEP 4: ENSEMBLE (ENHANCED) ====================
+        st.header("Bước 4: Mô hình Kết hợp Weighted SCENA")
         
         # 4.1 Weight Calculation
-        st.subheader("4.1 Weight Calculation (Silhouette Score)")
+        st.subheader("4.1 Tính toán Trọng số (Điểm Silhouette)")
         fig_weights = plot_ensemble_weights_detailed()
         st.plotly_chart(fig_weights, use_container_width=True)
         
@@ -358,7 +400,20 @@ def show():
         """)
         
         # 4.2 Co-Association Matrix (CSPA)
-        st.subheader("4.2 CSPA Co-Association Matrix")
+        st.subheader("4.2 Ma trận Đồng thuận CSPA")
+        
+        # --- Step-by-Step Logic for Ensemble ---
+        with st.expander("Xem Logic Bầu chọn Ensemble cho các mẫu này", expanded=False):
+            st.markdown("**1. Bảng Bầu chọn Mô hình Cơ sở:**")
+            st.markdown("Mỗi mô hình cơ sở đưa ra một 'phiếu bầu' (gán nhãn).")
+            ens_vote, ens_co = step_demo.explain_ensemble(sample_indices)
+            st.dataframe(ens_vote, use_container_width=True)
+            
+            st.markdown("**2. Độ Đồng thuận Tập con:**")
+            st.markdown("Tỷ lệ các mô hình đồng ý rằng mỗi cặp mẫu thuộc về cùng một cụm.")
+            st.dataframe(ens_co.style.background_gradient(cmap='Greens', axis=None), use_container_width=True)
+        # ---------------------------------------
+
         col1, col2 = st.columns([1, 1])
         
         with col1:
@@ -374,7 +429,7 @@ def show():
             st.plotly_chart(fig_co, use_container_width=True)
         
         # 4.3 SCENA Similarity
-        st.subheader("4.3 SCENA Similarity Matrix")
+        st.subheader("4.3 Ma trận Tương đồng SCENA")
         ensemble_cluster_ids = labels['Ensemble'].loc[sample_indices]
         ensemble_results = ensemble_cluster_ids.map(mappings['Ensemble'])
         
@@ -394,7 +449,7 @@ def show():
             st.plotly_chart(fig_scena, use_container_width=True)
         
         # 4.4 Performance Metrics
-        st.subheader("4.4 Ensemble Performance")
+        st.subheader("4.4 Hiệu suất Ensemble")
         
         col1, col2 = st.columns([1, 1])
         
@@ -407,7 +462,7 @@ def show():
             st.plotly_chart(fig_compare, use_container_width=True)
         
         # 4.5 Final Results
-        st.subheader("4.5 Final Results")
+        st.subheader("4.5 Kết quả Cuối cùng")
         
         final_df = results_df.copy()
         final_df['ENSEMBLE'] = ensemble_results
@@ -429,7 +484,7 @@ def show():
                 'Agreement': f"{agreement}/3", 
                 'Ensemble': ensemble_results.loc[idx],
                 'Actual': ground_truth_sample.loc[idx],
-                'Result': 'Correct' if is_correct else 'Wrong'
+                'Result': 'Đúng' if is_correct else 'Sai'
             })
         
         st.dataframe(pd.DataFrame(voting_data), use_container_width=True, hide_index=True)
@@ -441,14 +496,14 @@ def show():
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Correct", f"{correct}/{n_samples}")
+            st.metric("Chính xác", f"{correct}/{n_samples}")
         with col2:
-            st.metric("Accuracy", f"{accuracy:.1f}%", 
-                     delta="Excellent" if accuracy >= 80 else "Good")
+            st.metric("Độ chính xác", f"{accuracy:.1f}%", 
+                     delta="Xuất sắc" if accuracy >= 80 else "Tốt")
         with col3:
-            st.metric("Full Agreement", f"{full_agreement}/{n_samples}")
+            st.metric("Đồng thuận hoàn toàn", f"{full_agreement}/{n_samples}")
         with col4:
-            st.metric("ARI (Overall)", "0.9907")
+            st.metric("ARI (Tổng thể)", "0.9907")
         
         # Technical explanation
         with st.expander("Chi tiết thuật toán SCENA"):

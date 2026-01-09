@@ -174,7 +174,7 @@ def show():
     
     with col2:
         st.info("""
-        ### 💡 Giải thích kết quả
+        ### Giải thích kết quả
         
         **Tại sao Ensemble = Hierarchical?**
         

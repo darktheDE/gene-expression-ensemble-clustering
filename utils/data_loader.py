@@ -15,19 +15,25 @@ def load_all_data():
     Returns:
         tuple: (X_pca, labels_dict, metrics_dict)
     """
-    # Base path
-    data_path = Path(__file__).parent.parent / 'data' / 'Processed'
+    # Base paths
+    base_dir = Path(__file__).parent.parent / 'data'
+    processed_path = base_dir / 'Processed'
+    raw_path = base_dir / 'Raw'
+    result_path = base_dir / 'result'
     
-    # Load PCA features
-    X_pca = pd.read_csv(data_path / 'data_pca30.csv', index_col=0)
+    # Load PCA features (Processed)
+    X_pca = pd.read_csv(processed_path / 'data_pca30.csv', index_col=0)
     
     # Load all labels
     labels = {}
-    labels['Ground Truth'] = pd.read_csv(data_path / 'labels.csv', index_col=0)['Class']
-    labels['K-Means++'] = pd.read_csv(data_path / 'kmeans_labels.csv', index_col=0).iloc[:, 0]
-    labels['Hierarchical'] = pd.read_csv(data_path / 'hierarchical_manual_labels.csv', index_col=0).iloc[:, 0]
-    labels['DBSCAN'] = pd.read_csv(data_path / 'dbscan_labels.csv', index_col=0).iloc[:, 0]
-    labels['Ensemble'] = pd.read_csv(data_path / 'ensemble_scena_labels.csv', index_col=0).iloc[:, 0]
+    # Ground Truth is now in Raw/labels.csv
+    labels['Ground Truth'] = pd.read_csv(raw_path / 'labels.csv', index_col=0)['Class']
+    
+    # Clustering labels are now in result/
+    labels['K-Means++'] = pd.read_csv(result_path / 'kmeans_plusplus_labels.csv', index_col=0).iloc[:, 0]
+    labels['Hierarchical'] = pd.read_csv(result_path / 'hierarchical_manual_labels.csv', index_col=0).iloc[:, 0]
+    labels['DBSCAN'] = pd.read_csv(result_path / 'dbscan_labels.csv', index_col=0).iloc[:, 0]
+    labels['Ensemble'] = pd.read_csv(result_path / 'ensemble_scena_labels.csv', index_col=0).iloc[:, 0]
     
     # Hard-coded metrics (pre-computed)
     metrics = {
