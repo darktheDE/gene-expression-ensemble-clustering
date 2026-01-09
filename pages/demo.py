@@ -90,7 +90,6 @@ def plot_co_association_matrix(labels_dict, sample_indices):
     n_samples = len(sample_indices)
     models = ['K-Means++', 'Hierarchical', 'DBSCAN']
     
-    # Build co-association matrix
     co_matrix = np.zeros((n_samples, n_samples))
     for model in models:
         model_labels = labels_dict[model].loc[sample_indices].values
@@ -99,7 +98,7 @@ def plot_co_association_matrix(labels_dict, sample_indices):
                 if model_labels[i] == model_labels[j]:
                     co_matrix[i, j] += 1
     
-    co_matrix = co_matrix / len(models)  # Normalize to [0, 1]
+    co_matrix = co_matrix / len(models)
     
     fig = go.Figure(data=go.Heatmap(
         z=co_matrix,
@@ -126,14 +125,12 @@ def plot_scena_similarity_matrix(results_df, ensemble_results):
     samples = results_df.index.tolist()
     n = len(samples)
     
-    # Calculate similarity based on ensemble cluster assignment
     sim_matrix = np.zeros((n, n))
     for i in range(n):
         for j in range(n):
             if ensemble_results.iloc[i] == ensemble_results.iloc[j]:
                 sim_matrix[i, j] = 1.0
             else:
-                # Partial similarity from base models
                 agreement = sum(1 for col in results_df.columns 
                               if results_df.iloc[i][col] == results_df.iloc[j][col])
                 sim_matrix[i, j] = agreement / len(results_df.columns)
@@ -170,7 +167,7 @@ def plot_ensemble_metrics_radar():
     
     categories = list(metrics.keys())
     values = list(metrics.values())
-    values.append(values[0])  # Close the radar
+    values.append(values[0])
     
     fig = go.Figure()
     fig.add_trace(go.Scatterpolar(
@@ -224,49 +221,6 @@ def plot_model_comparison_grouped():
     return fig
 
 
-def plot_voting_sankey(results_df, ensemble_results, ground_truth):
-    """Create Sankey diagram showing voting flow."""
-    models = ['K-Means++', 'Hierarchical', 'DBSCAN']
-    classes = sorted(ground_truth.unique())
-    
-    # Build flow data
-    sources, targets, values = [], [], []
-    labels = models + ['Ensemble'] + [f'Final: {c}' for c in classes]
-    
-    for i, model in enumerate(models):
-        for j, cls in enumerate(classes):
-            count = ((results_df[model] == cls) & (ensemble_results == cls)).sum()
-            if count > 0:
-                sources.append(i)
-                targets.append(3)  # Ensemble node
-                values.append(count)
-    
-    for j, cls in enumerate(classes):
-        count = (ensemble_results == cls).sum()
-        if count > 0:
-            sources.append(3)
-            targets.append(4 + j)
-            values.append(count)
-    
-    fig = go.Figure(data=[go.Sankey(
-        node=dict(
-            pad=15,
-            thickness=20,
-            line=dict(color="black", width=0.5),
-            label=labels,
-            color=['#45B7D1', '#4ECDC4', '#FF6B6B', '#95E1D3'] + ['#808080'] * len(classes)
-        ),
-        link=dict(
-            source=sources,
-            target=targets,
-            value=values
-        )
-    )])
-    
-    fig.update_layout(title="Ensemble Voting Flow", height=400, template='plotly_white')
-    return fig
-
-
 def plot_ensemble_weights_detailed():
     """Create detailed ensemble weights visualization."""
     weights = get_ensemble_weights()
@@ -278,7 +232,6 @@ def plot_ensemble_weights_detailed():
     models = list(weights.keys())
     colors = ['#4ECDC4', '#45B7D1', '#FF6B6B']
     
-    # Bar chart for silhouette scores
     fig.add_trace(go.Bar(
         x=models,
         y=[silhouette_scores[m] for m in models],
@@ -288,7 +241,6 @@ def plot_ensemble_weights_detailed():
         showlegend=False
     ), row=1, col=1)
     
-    # Pie chart for weights
     fig.add_trace(go.Pie(
         labels=models,
         values=[weights[m] for m in models],
@@ -303,32 +255,32 @@ def plot_ensemble_weights_detailed():
 
 
 def show():
-    st.title("🚀 Demo Pipeline Prediction")
+    st.title("Demo Pipeline Prediction")
     st.markdown("""
     Trang này mô phỏng **quy trình Weighted SCENA Ensemble** đầy đủ:
     
-    1. **Input** → Raw Data (20,531 genes)
-    2. **Preprocessing** → PCA (30 components)  
-    3. **Base Clustering** → K-Means++, Hierarchical, DBSCAN
-    4. **Ensemble** → CSPA + SCENA với Adaptive Weights
+    1. **Input** - Raw Data (20,531 genes)
+    2. **Preprocessing** - PCA (30 components)  
+    3. **Base Clustering** - K-Means++, Hierarchical, DBSCAN
+    4. **Ensemble** - CSPA + SCENA với Adaptive Weights
     """)
     
     st.markdown("---")
     
     with st.sidebar:
-        st.header("⚙️ Cấu hình Demo")
+        st.header("Cấu hình Demo")
         n_samples = st.slider("Số lượng mẫu", min_value=3, max_value=15, value=5)
         random_seed = st.number_input("Random Seed", value=42, step=1)
-        run_btn = st.button("🚀 Chạy Demo", type="primary", use_container_width=True)
+        run_btn = st.button("Chạy Demo", type="primary", use_container_width=True)
         
     if run_btn:
         with st.status("Đang khởi tạo...", expanded=True) as status:
-            st.write("📥 Loading data...")
+            st.write("Loading data...")
             raw_data = load_raw_data()
             X_pca, labels, metrics = load_all_data()
             color_map = get_class_colors()
             
-            st.write("🔄 Preparing mappings...")
+            st.write("Preparing mappings...")
             ground_truth = labels['Ground Truth']
             mappings = {}
             for model_name in ['K-Means++', 'Hierarchical', 'DBSCAN', 'Ensemble']:
@@ -340,7 +292,7 @@ def show():
         sample_indices = sampled_raw.index
         
         # ==================== STEP 1: RAW DATA ====================
-        st.header("1️⃣ Input: Raw Data")
+        st.header("Step 1: Input - Raw Data")
         
         col1, col2 = st.columns([1, 1])
         with col1:
@@ -355,26 +307,26 @@ def show():
         st.markdown("---")
         
         # ==================== STEP 2: PREPROCESSING ====================
-        st.header("2️⃣ Preprocessing: PCA")
+        st.header("Step 2: Preprocessing - PCA")
         
         col1, col2 = st.columns([1, 1])
         with col1:
             fig_pca, total_var = plot_pca_variance()
             st.plotly_chart(fig_pca, use_container_width=True)
-            st.info(f"**30 components** → **{total_var:.1%}** variance")
+            st.info(f"**30 components** giải thích **{total_var:.1%}** variance")
         
         with col2:
             fig_location = plot_sample_scatter(X_pca, sample_indices, ground_truth, color_map)
             st.plotly_chart(fig_location, use_container_width=True)
         
         sampled_processed = X_pca.loc[sample_indices]
-        with st.expander("📊 Xem dữ liệu PCA"):
+        with st.expander("Xem dữ liệu PCA"):
             st.dataframe(sampled_processed.style.format("{:.4f}"), use_container_width=True)
         
         st.markdown("---")
         
         # ==================== STEP 3: BASE MODELS ====================
-        st.header("3️⃣ Base Clustering Models")
+        st.header("Step 3: Base Clustering Models")
         
         results_df = pd.DataFrame(index=sample_indices)
         for model in ['K-Means++', 'Hierarchical', 'DBSCAN']:
@@ -394,10 +346,10 @@ def show():
         st.markdown("---")
         
         # ==================== STEP 4: ENSEMBLE (ENHANCED) ====================
-        st.header("4️⃣ Weighted SCENA Ensemble")
+        st.header("Step 4: Weighted SCENA Ensemble")
         
         # 4.1 Weight Calculation
-        st.subheader("4.1 🎯 Weight Calculation (Silhouette Score)")
+        st.subheader("4.1 Weight Calculation (Silhouette Score)")
         fig_weights = plot_ensemble_weights_detailed()
         st.plotly_chart(fig_weights, use_container_width=True)
         
@@ -406,7 +358,7 @@ def show():
         """)
         
         # 4.2 Co-Association Matrix (CSPA)
-        st.subheader("4.2 📊 CSPA Co-Association Matrix")
+        st.subheader("4.2 CSPA Co-Association Matrix")
         col1, col2 = st.columns([1, 1])
         
         with col1:
@@ -422,7 +374,7 @@ def show():
             st.plotly_chart(fig_co, use_container_width=True)
         
         # 4.3 SCENA Similarity
-        st.subheader("4.3 🔗 SCENA Similarity Matrix")
+        st.subheader("4.3 SCENA Similarity Matrix")
         ensemble_cluster_ids = labels['Ensemble'].loc[sample_indices]
         ensemble_results = ensemble_cluster_ids.map(mappings['Ensemble'])
         
@@ -442,7 +394,7 @@ def show():
             st.plotly_chart(fig_scena, use_container_width=True)
         
         # 4.4 Performance Metrics
-        st.subheader("4.4 📈 Ensemble Performance")
+        st.subheader("4.4 Ensemble Performance")
         
         col1, col2 = st.columns([1, 1])
         
@@ -455,11 +407,11 @@ def show():
             st.plotly_chart(fig_compare, use_container_width=True)
         
         # 4.5 Final Results
-        st.subheader("4.5 🏆 Final Results")
+        st.subheader("4.5 Final Results")
         
         final_df = results_df.copy()
-        final_df['⚡ ENSEMBLE'] = ensemble_results
-        final_df['✅ Ground Truth'] = ground_truth_sample
+        final_df['ENSEMBLE'] = ensemble_results
+        final_df['Ground Truth'] = ground_truth_sample
         
         match_values = (ensemble_results.values == ground_truth_sample.values)
         
@@ -471,10 +423,14 @@ def show():
                 pred = results_df.loc[idx, model]
                 votes[pred] = votes.get(pred, 0) + 1
             agreement = max(votes.values())
-            voting_data.append({'Sample': idx, 'Agreement': f"{agreement}/3", 
-                              'Ensemble': ensemble_results.loc[idx],
-                              'Actual': ground_truth_sample.loc[idx],
-                              'Result': '✅' if match_values[list(sample_indices).index(idx)] else '❌'})
+            is_correct = match_values[list(sample_indices).index(idx)]
+            voting_data.append({
+                'Sample': idx, 
+                'Agreement': f"{agreement}/3", 
+                'Ensemble': ensemble_results.loc[idx],
+                'Actual': ground_truth_sample.loc[idx],
+                'Result': 'Correct' if is_correct else 'Wrong'
+            })
         
         st.dataframe(pd.DataFrame(voting_data), use_container_width=True, hide_index=True)
         
@@ -485,17 +441,17 @@ def show():
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("✅ Đúng", f"{correct}/{n_samples}")
+            st.metric("Correct", f"{correct}/{n_samples}")
         with col2:
-            st.metric("📈 Accuracy", f"{accuracy:.1f}%", 
+            st.metric("Accuracy", f"{accuracy:.1f}%", 
                      delta="Excellent" if accuracy >= 80 else "Good")
         with col3:
-            st.metric("🤝 Full Agreement", f"{full_agreement}/{n_samples}")
+            st.metric("Full Agreement", f"{full_agreement}/{n_samples}")
         with col4:
-            st.metric("📊 ARI (Overall)", "0.9907")
+            st.metric("ARI (Overall)", "0.9907")
         
         # Technical explanation
-        with st.expander("📚 Chi tiết thuật toán SCENA"):
+        with st.expander("Chi tiết thuật toán SCENA"):
             st.markdown("""
             ### Weighted SCENA Ensemble Algorithm
             
